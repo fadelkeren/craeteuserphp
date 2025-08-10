@@ -18,7 +18,6 @@
   <h1>Buat User</h1>
 
   <?php
-  // proses form (letakkan di bagian atas agar pesan muncul sebelum form)
   require_once __DIR__ . '/db.php';
 
   $errors = [];
@@ -29,7 +28,7 @@
       $email = isset($_POST['email']) ? trim($_POST['email']) : '';
       $password = isset($_POST['password']) ? $_POST['password'] : '';
 
-      // validasi sederhana
+
       if ($username === '') $errors[] = 'Username wajib diisi.';
       if ($email === '') $errors[] = 'Email wajib diisi.';
       elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Format email tidak valid.';
@@ -37,7 +36,7 @@
       elseif (strlen($password) < 6) $errors[] = 'Password minimal 6 karakter.';
 
       if (empty($errors)) {
-          // cek duplicate username/email
+     
           $stmt = $pdo->prepare('SELECT COUNT(*) as cnt FROM users WHERE username = :u OR email = :e');
           $stmt->execute([':u' => $username, ':e' => $email]);
           $row = $stmt->fetch();
@@ -45,14 +44,13 @@
           if ($row && $row['cnt'] > 0) {
               $errors[] = 'Username atau email sudah terpakai.';
           } else {
-              // simpan user
+      
               $hash = password_hash($password, PASSWORD_DEFAULT);
               $insert = $pdo->prepare('INSERT INTO users (username, email, password) VALUES (:u, :e, :p)');
               $insert->execute([':u' => $username, ':e' => $email, ':p' => $hash]);
 
               $success = 'User berhasil dibuat.';
 
-              // kosongkan input setelah berhasil
               $username = $email = '';
           }
       }
