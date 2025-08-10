@@ -1,3 +1,4 @@
+<?php
 $DB_HOST = 'localhost';
 $DB_NAME = 'simple_app';
 $DB_USER = 'root';
